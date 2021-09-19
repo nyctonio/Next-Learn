@@ -1,34 +1,87 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Next
 
-## Getting Started
+```javascript
+import Link from "next/link";
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
+<Link href="/route" replace>
+  <a>route</a>
+</Link>;
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Navigation Programitically
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+```javascript
+import React from "react";
+import { useRouter } from "next/router";
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+export default function Blog() {
+  const router = useRouter();
+  const handleClick = () => {
+    router.push("/");
+  };
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+  return (
+    <div>
+      <h1>Blog</h1>
+      <button onClick={handleClick}> click</button>
+    </div>
+  );
+}
+```
 
-## Learn More
+## Custom 404 Page
 
-To learn more about Next.js, take a look at the following resources:
+```javasript
+create a 404.js page in the pages folder
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## pages is a special folder in next.js with avaiblity of geStaticProps which only runs on server side
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+we can do backend stuff in the getStaticProps we can use api keys too as getStaticProps never runs in client
+side
 
-## Deploy on Vercel
+getStaticProps should return an object with key props which also should be a an object
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+getStaticProps runs only build time
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## in getStaticPaths fallback may be true false or 'blocking'
+
+in false -
+the unknown paths will give 404
+
+in true
+the unknown paths will load at run time we have to specify here the fallback condition
+
+in 'blocking'
+everything is same as true but here we will have an loading instead of fallback conditions
+
+# Stale Data problem and build time problem
+
+Sol-(ISR) Incremental static regeneration
+
+generate in every 10 seconds revalidate
+
+```javascript
+export const getStaticProps = async () => {
+  const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+  const data = await response.json();
+
+  return {
+    props: {
+      posts: data.slice(0, 3),
+    },
+    revalidate: 10,
+  };
+};
+```
+
+but this will also not solve this issue completely
+
+so for that we have (SSR)
+
+# Server Side Rendering
+
+# Catch all and optional catch all
+
+[...name] [[...name]]
+will give 404 will not give 404
