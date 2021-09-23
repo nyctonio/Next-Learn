@@ -1,4 +1,4 @@
-# Next
+# Next.JS
 
 ```javascript
 import Link from "next/link";
